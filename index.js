@@ -1,7 +1,7 @@
 // Import Packages
 require("dotenv").config();
 const server = require("./routers/server");
-const secrets = require('./secrets')
+const secrets = require("./secrets");
 
 const PORT = secrets.port || 5000;
 

@@ -1,6 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+// const cookieParser = require('cookie-parser');
 
 const userModel = require("../database/userModel");
 const secrets = require("../secrets");
@@ -10,12 +11,17 @@ const router = express.Router();
 router.post("/login", async (req, res, next) => {
   const { username, password } = req.body;
   if (!username || !password)
-    next({ status: 400, message: "please fill out both username and password" });
+    next({
+      status: 400,
+      message: "please fill out both username and password"
+    });
   try {
     const user = await userModel.findOneBy({ username });
     const passwordValid = await bcrypt.compare(password, user.password);
     if (user && passwordValid) {
       const token = jwt.sign(user, secrets.secret, { expiresIn: "7d" });
+
+      res.cookie("token", token, { maxAge: 1000 * 60 * 60 * 24 * 7 });
       res.json({ message: `Welcome ${user.username}`, token });
     } else {
       next({ status: 401, message: "Invalid Credentials" });
@@ -28,9 +34,13 @@ router.post("/login", async (req, res, next) => {
 router.post("/register", async (req, res, next) => {
   const { username, password } = req.body;
   if (!username || !password)
-    next({ status: 400, message: "please fill out both username and password" });
+    next({
+      status: 400,
+      message: "please fill out both username and password"
+    });
   const usernameExists = await userModel.findOneBy({ username });
-  if (usernameExists) next({ status: 400, message: `username: ${username} is already taken` });
+  if (usernameExists)
+    next({ status: 400, message: `username: ${username} is already taken` });
 
   try {
     const newUser = await userModel.add({ username, password });
