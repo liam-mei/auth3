@@ -6,6 +6,10 @@ exports.up = async function(knex) {
       .notNullable()
       .unique();
     table.string("password", 128).notNullable();
+    table
+      .integer("authorization")
+      .notNullable()
+      .defaultTo(1);
   });
 };
 
