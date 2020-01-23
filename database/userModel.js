@@ -1,7 +1,7 @@
 const db = require("./dbConfig");
 const bcrypt = require("bcryptjs");
 
-function find() {
+function findAll() {
   return db("users");
 }
 
@@ -40,7 +40,7 @@ function remove(id) {
 }
 
 module.exports = {
-  find,
+  findAll,
   findAllBy,
   findOneBy,
   add,
