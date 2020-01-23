@@ -1,6 +1,7 @@
 const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
 // Import Routers
 const userRouter = require("./userRouter");
@@ -11,11 +12,11 @@ const { restricted } = require("../middleware/middleware");
 
 // Use Middleware
 const server = express();
-server.use(helmet(), cors(), express.json());
+server.use(helmet(), cors(), cookieParser(), express.json());
 
 // Use Routers
 server.use("/auth", authRouter);
-// server.use("/users", restricted, userRouter);
+server.use("/users", restricted, userRouter);
 
 // Sanity Check Route
 server.get("/", (req, res, next) => {
